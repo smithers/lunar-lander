@@ -11,6 +11,8 @@ export type Snap = {
   outcome?: string;
   message: string[];
   zoomed: boolean;
+  attractPage: 'title' | 'scores' | 'controls';
+  initials: { letters: string[]; pos: number };
   lever: number;
   lander: { x: number; y: number; vx: number; vy: number; orientation: number };
   highScores: { initials: string; score: number }[];

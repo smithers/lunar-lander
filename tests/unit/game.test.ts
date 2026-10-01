@@ -318,3 +318,26 @@ describe('review pass 2', () => {
     expect(g.terrain).not.toBe(terrain);
   });
 });
+
+describe('review: mission selection on the Ready screen', () => {
+  it('a mission chosen after coin-up carries into the game', () => {
+    const g = createGame(1, { qualifies: () => false });
+    stepGame(g, press({ coin: true }));
+    stepGame(g, press({ select: true }));
+    expect(g.mission).toBe(Mission.Cadet);
+    stepGame(g, press({ start: true }));
+    expect(g.state).toBe(GameState.Playing);
+    expect(g.mission).toBe(Mission.Cadet);
+  });
+  it('the mission resets to Training when a game ends', () => {
+    const g = startedGame();
+    stepGame(g, press({ select: true }));
+    stepGame(g, press({ select: true }));
+    expect(g.mission).toBe(Mission.Prime);
+    g.lander.fuel = 0;
+    g.lander.outOfFuel = true;
+    hoverOverPad(g, -20 * 64);
+    runUntil(g, () => g.state === GameState.GameOver, 2000);
+    expect(g.mission).toBe(Mission.Training);
+  });
+});

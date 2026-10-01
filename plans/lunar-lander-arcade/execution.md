@@ -15,6 +15,6 @@ tooling. All later phases run in order, because they share the simulation API an
 - [x] [Phase 3: Simulation Core](./phase-03-simulation-core.md)
 - [x] [Phase 4: Game Flow and High-Score Storage](./phase-04-game-flow.md)
 - [x] [Phase 5: Vector Graphics, HUD, Controls and Main Loop](./phase-05-vector-rendering-and-controls.md)
-- [ ] [Phase 6: Sound](./phase-06-sound.md)
+- [x] [Phase 6: Sound](./phase-06-sound.md)
 - [ ] [Phase 7: Attract Mode, Initials Entry and Full Playwright Flows](./phase-07-attract-mode-and-flows.md)
 - [ ] [Phase 8: Final Verification and Playtest](./phase-08-final-verification.md)

@@ -112,3 +112,13 @@ describe('key mapping', () => {
     expect(s.thrustLevel).toBe(0);
   });
 });
+
+describe('taps between frames (initials entry)', () => {
+  it('a quick arrow tap still rotates for one frame', () => {
+    const k = createKeyboard();
+    k.keyDown('ArrowRight');
+    k.keyUp('ArrowRight');
+    expect(k.sample().rotate).toBe(-1);
+    expect(k.sample().rotate).toBe(0);
+  });
+});

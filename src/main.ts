@@ -5,6 +5,7 @@ import { createKeyboard } from './input/keyboard';
 import { createCamera, resetCamera, updateCamera, worldToScreen, type Camera } from './render/camera';
 import { altitudeHud, drawHud, drawMessages } from './render/hud';
 import { drawDebris, drawLander, drawTerrain } from './render/scene';
+import { attractPage, drawScreens, showTerrain } from './render/screens';
 import { createVector } from './render/vector';
 import { FRAME_DT, LANDING_MESSAGE_FRAMES } from './sim/constants';
 import { createGame, GameState, stepGame, type Game, type GameEvents, type GameInput } from './sim/game';
@@ -59,13 +60,14 @@ function render(alpha: number): void {
   if (inRound) {
     updateCamera(camera, { x, y, vx: s.vx }, groundY(game.terrain, x), altitudeHud(game, x, y));
   } else {
+    // Between rounds the range drifts slowly past, as in the cabinet's attract mode.
     camera.zoomed = false;
-    camera.left = 0;
+    camera.left = game.state === GameState.Attract ? (game.frame * 0.25) % game.terrain.width : 0;
     camera.bottom = 0;
   }
 
   vector.begin();
-  drawTerrain(vector, camera, game.terrain, game.frame);
+  if (showTerrain(game)) drawTerrain(vector, camera, game.terrain, game.frame);
   if (inRound) {
     if (game.crash && game.state === GameState.Landed) {
       drawDebris(vector, camera, game.terrain, game.crash, LANDING_MESSAGE_FRAMES - game.messageFrames);
@@ -75,6 +77,7 @@ function render(alpha: number): void {
   }
   drawHud(vector, game, x, y);
   drawMessages(vector, game);
+  drawScreens(vector, game, highScores.list());
   vector.end();
 }
 
@@ -179,6 +182,8 @@ if (testMode) {
       outcome: game.lastOutcome,
       message: game.message,
       zoomed: camera.zoomed,
+      attractPage: attractPage(game.frame),
+      initials: game.initials,
       lever: keyboard.lever,
       lander: { x: game.lander.x, y: game.lander.y, vx: game.lander.vx, vy: game.lander.vy, orientation: orientation(game.lander) },
       highScores: highScores.list(),

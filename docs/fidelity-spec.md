@@ -68,7 +68,7 @@ Start, Select Game, Abort, Rotate Left, Rotate Right, and an analog thrust lever
 ### 2.5 Mission select
 - Each press of Select Game cycles Training → Cadet → Prime → Command → Training [sourced: DIS $62AB].
 - It works at any time, mid-flight included. A change resets the yaw rate and reloads gravity.
-- Every new game starts in **Training** [sourced: DIS $6029].
+- Every new game starts in **Training** [sourced: DIS $6029]. In this recreation the mission resets to Training when a game ends, and a selection made after coin-up (on the Ready screen) carries into the game it starts.
 
 ### 2.6 Keyboard mapping (this recreation)
 | Action | Keys |

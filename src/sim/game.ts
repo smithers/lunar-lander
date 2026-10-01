@@ -142,15 +142,17 @@ function startRound(g: Game): void {
   g.state = GameState.Playing;
 }
 
+/** Starts a game in the mission currently selected (Training unless changed after coin-up). */
 function startGame(g: Game): void {
   g.terrain = (g.config.terrainFactory ?? generateTerrain)(g.rng);
   g.score = 0;
   g.round = 0;
-  g.mission = Mission.Training;
   startRound(g);
 }
 
+/** Each new game starts in Training (ROM $6029): the mission resets when a game ends. */
 function endGame(g: Game, ev: GameEvents): void {
+  g.mission = Mission.Training;
   g.state = GameState.GameOver;
   g.stateFrames = GAME_OVER_FRAMES;
   ev.gameOver = true;

@@ -76,8 +76,8 @@ export function createKeyboard(): Keyboard {
         lowerHeld++;
       } else lowerHeld = 0;
 
-      const left = any(LEFT, down);
-      const right = any(RIGHT, down);
+      const left = active(LEFT);
+      const right = active(RIGHT);
       const s: KeyboardSample = {
         thrustLevel: lever,
         rotate: left === right ? 0 : left ? 1 : -1,

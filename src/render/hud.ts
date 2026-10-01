@@ -1,17 +1,10 @@
 // HUD and on-screen messages (spec §6.1, §8, §9).
-import {
-  ALT_PER_SB,
-  FLASH_FRAMES,
-  FUEL_PER_COIN,
-  INSERT_COIN_FLASH_FRAMES,
-  LOW_FUEL,
-  MISSION_NAMES,
-} from '../sim/constants';
+import { ALT_PER_SB, FLASH_FRAMES, LOW_FUEL, MISSION_NAMES } from '../sim/constants';
 import { GameState, type Game } from '../sim/game';
 import { disp } from '../sim/landing';
 import { groundY } from '../sim/terrain';
 import { SCREEN_H, SCREEN_W } from './camera';
-import { drawText, textWidth } from './font';
+import { drawText } from './font';
 import type { Vector } from './vector';
 
 const SIZE = 16;
@@ -73,46 +66,17 @@ function centered(v: Vector, lines: string[], y: number, size = 20, gap = 34): v
   lines.forEach((line, i) => drawText(v, line, SCREEN_W / 2, y + i * gap, size, 'center'));
 }
 
+/** In-flight messages: low/out of fuel, and the landing or crash report (spec §6.1). */
 export function drawMessages(v: Vector, g: Game): void {
-  const flash = (period: number) => ((g.frame / period) & 1) === 0;
   const s = g.lander;
-  switch (g.state) {
-    case GameState.Attract:
-      centered(v, [`${FUEL_PER_COIN / 100} FUEL UNITS PER COIN`], 300);
-      if (flash(INSERT_COIN_FLASH_FRAMES)) centered(v, ['INSERT COINS'], 360);
-      break;
-    case GameState.Ready:
-      centered(v, ['SELECT OPTION', 'PUSH START', `${Math.floor(s.fuel / 100)} FUEL UNITS`], 300);
-      break;
-    case GameState.Playing:
-      if (s.outOfFuel) centered(v, ['OUT OF FUEL'], 250);
-      else if (s.fuel < LOW_FUEL && flash(FLASH_FRAMES)) centered(v, ['LOW ON FUEL'], 250);
-      break;
-    case GameState.Landed: {
-      centered(v, g.message, 300);
-      if (g.fuelLostFrames > 0) {
-        centered(v, ['AUXILIARY FUEL TANKS DESTROYED', `${Math.floor(g.fuelLost / 100)} FUEL UNITS LOST`], 300 + g.message.length * 34 + 30, 16, 28);
-      }
-      break;
-    }
-    case GameState.GameOver:
-      centered(v, ['GAME OVER'], 330, 28);
-      break;
-    case GameState.Initials: {
-      centered(v, ['GREAT SCORE', 'ENTER YOUR INITIALS'], 270);
-      const ini = g.initials;
-      const size = 36;
-      const step = 56;
-      const x0 = SCREEN_W / 2 - step;
-      ini.letters.forEach((ch, i) => {
-        drawText(v, ch === ' ' ? '_' : ch, x0 + i * step, 420, size, 'center');
-        if (i === ini.pos && flash(FLASH_FRAMES)) v.line(x0 + i * step - 16, 432, x0 + i * step + 16, 432);
-      });
-      centered(v, ['LEFT/RIGHT TO CHANGE  SPACE TO CONFIRM'], 500, 12, 20);
-      break;
+  if (g.state === GameState.Playing) {
+    if (s.outOfFuel) centered(v, ['OUT OF FUEL'], 250);
+    else if (s.fuel < LOW_FUEL && ((g.frame / FLASH_FRAMES) & 1) === 0) centered(v, ['LOW ON FUEL'], 250);
+  } else if (g.state === GameState.Landed) {
+    centered(v, g.message, 300);
+    if (g.fuelLostFrames > 0) {
+      const lost = ['AUXILIARY FUEL TANKS DESTROYED', `${Math.floor(g.fuelLost / 100)} FUEL UNITS LOST`];
+      centered(v, lost, 300 + g.message.length * 34 + 30, 16, 28);
     }
   }
 }
-
-/** Width helper re-exported for page layout tests. */
-export { textWidth };
