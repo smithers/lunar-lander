@@ -73,7 +73,7 @@ Start, Select Game, Abort, Rotate Left, Rotate Right, and an analog thrust lever
 ### 2.6 Keyboard mapping (this recreation)
 | Action | Keys |
 |---|---|
-| Raise / lower thrust lever (one level per 2 frames held) | ↑ / W, ↓ / S |
+| Raise / lower thrust lever (one level per 2 frames held; 0 → 15 in ≈ 0.73 s) | ↑ / W, ↓ / S |
 | Rotate left / right | ← / A, → / D |
 | Abort | Space |
 | Insert coin | 5 or C |
@@ -217,6 +217,7 @@ There is **no** "lost in space" message in the ROM.
 ## 7. World, terrain and camera
 
 - **Logical display:** 4:3 (MAME visible area 1044 × 800 DVG units). The browser letterboxes to 4:3 [sourced: MAME].
+- **Zoomed-out view:** 220 screen-bytes tall (≈ 293 wide), which leaves room for the HUD above the start height of 170.5. The ×4 close-up is 55 × 73 [estimate].
 - **Terrain:**
   - The original is a fixed, jagged mountain range that wraps horizontally. Each round randomizes the start offset and the active pad set [sourced: DIS $6235, WIKI].
   - We **generate our own** jagged range from a seed, since ROM terrain data is not copied. It is generated once per game and kept for every round of that game. Each round randomizes the start offset, meaning which part of the range the ship starts over. Our pads are fixed per game: the ROM's per-round pad-set change is not reproduced [estimate].
@@ -231,7 +232,7 @@ There is **no** "lost in space" message in the ROM.
 - **Zoom:**
   - Two scales; the close-up is **×4** [sourced: DIS].
   - On switching, the view re-centers on the ship [sourced: WIKI].
-  - Zoom in when altitude (HUD units) < **200**; zoom back out when > 260 (hysteresis) [estimate].
+  - Zoom in when altitude (HUD units) < **100**; zoom back out when > 140 (hysteresis). These were tuned so the ground and the ship are both well inside the close-up when it switches [estimate].
   - While zoomed, the ship stays near center and the terrain scrolls near the edges [sourced: DIS (interpretation)].
 
 ## 8. Display and HUD
@@ -289,7 +290,7 @@ The thrust source values are sourced; the coin sound and explosion duration are 
 3. Initial vy sign (§4)
 4. World width, peak height, pad count and pad widths (§7)
 5. Top clamp (§7)
-6. Zoom thresholds 200 / 260 (§7)
+6. Zoom thresholds 100 / 140 (§7)
 7. Flame length (§8)
 8. Debris horizontal spread (§8)
 9. Explosion duration and coin chirp (§11)

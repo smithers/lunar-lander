@@ -67,6 +67,11 @@ describe('attract and credits', () => {
     expect(g.lander.x).toBeLessThan(g.terrain.width);
     expect(orientation(g.lander)).toBe(16);
   });
+  it('several coins in one frame all count', () => {
+    const g = createGame(1, { qualifies: () => false });
+    stepGame(g, press({ coin: true, coins: 2 }));
+    expect(g.lander.fuel).toBe(2 * FUEL_PER_COIN);
+  });
   it('coins stack and cap at 9999 units', () => {
     const g = createGame(1, { qualifies: () => false });
     for (let i = 0; i < 20; i++) stepGame(g, press({ coin: true }));

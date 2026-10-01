@@ -34,6 +34,8 @@ export type GameState = (typeof GameState)[keyof typeof GameState];
 /** One frame of input. coin/start/select/confirm are press edges; the rest are levels. */
 export interface GameInput extends FrameInput {
   coin: boolean;
+  /** Coins inserted this frame, when more than one arrives between frames (default 1 if coin). */
+  coins?: number;
   start: boolean;
   select: boolean;
   confirm: boolean;
@@ -227,8 +229,9 @@ export function stepGame(g: Game, input: GameInput): GameEvents {
   };
   g.frame++;
 
-  if (input.coin) {
-    addFuel(g, FUEL_PER_COIN);
+  const coins = input.coins ?? (input.coin ? 1 : 0);
+  if (coins > 0) {
+    addFuel(g, FUEL_PER_COIN * coins);
     ev.coin = true;
     if (g.state === GameState.Attract) g.state = GameState.Ready;
   }

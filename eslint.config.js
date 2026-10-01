@@ -10,6 +10,11 @@ export default tseslint.config(
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   {
+    // Playwright page.evaluate callbacks reach the untyped window.__lunar test hook.
+    files: ['tests/e2e/**/*.ts'],
+    rules: { '@typescript-eslint/no-explicit-any': 'off' },
+  },
+  {
     // The simulation must stay DOM-free so it is deterministic and unit-testable.
     // The authoritative check is tsconfig.sim.json (no DOM lib); these rules catch the
     // common cases early in the editor.
