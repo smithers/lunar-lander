@@ -60,7 +60,7 @@ Start, Select Game, Abort, Rotate Left, Rotate Right, and an analog thrust lever
 - Every other frame the ship rotates one orientation toward upright (8).
 - Every frame |vx| drops by 256 raw (4 disp) until it reaches 0.
 - Once upright, fires thrust level 16 (255 raw/frame along the heading).
-- Burns for **at least 40 frames** (counter 100 → 60) and continues until vy ≥ +64 disp (raw ≥ 4096, upward).
+- The counter decrements once per upright burn frame, so the burn lasts **at most 100 frames**. After the first 40 (counter < 60) it ends early on the first frame vy ≥ +64 disp (raw ≥ 4096, upward). If vy never gets there, the abort still ends when the counter reaches 0 [sourced: DIS $64AC, $64E3–$64F7].
 - Rotation input is ignored during an abort.
 - Fuel cost is 2.17 units per frame of abort burn (≈ 120–180 units per abort).
 - No direct score effect.
