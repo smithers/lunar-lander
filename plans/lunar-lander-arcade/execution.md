@@ -10,7 +10,7 @@ turning the spec into `src/sim/constants.ts` and running the first real tests on
 tooling. All later phases run in order, because they share the simulation API and
 `src/main.ts`.
 
-- [ ] [Phase 1: Project Setup and Quality Checks](./phase-01-project-setup.md)
+- [x] [Phase 1: Project Setup and Quality Checks](./phase-01-project-setup.md)
 - [ ] [Phase 2: Fidelity Spec](./phase-02-fidelity-spec.md)
 - [ ] [Phase 3: Simulation Core](./phase-03-simulation-core.md)
 - [ ] [Phase 4: Game Flow and High-Score Storage](./phase-04-game-flow.md)
