@@ -1,5 +1,6 @@
 // Entry point: fixed-timestep simulation at the ROM's 40.96 Hz, rendered every animation
 // frame with interpolation. `?test` exposes a hook for Playwright; `?seed=N` fixes the seed.
+import { createSynth, defaultAudioContext } from './audio/synth';
 import { createKeyboard } from './input/keyboard';
 import { createCamera, resetCamera, updateCamera, worldToScreen, type Camera } from './render/camera';
 import { altitudeHud, drawHud, drawMessages } from './render/hud';
@@ -21,9 +22,12 @@ const keyboard = createKeyboard();
 const highScores = createHighScores(browserStorage());
 const game: Game = createGame(seed, { qualifies: (score) => highScores.qualifies(score) });
 const camera: Camera = createCamera();
+const synth = createSynth({ create: defaultAudioContext, record: testMode });
 
-/** Listeners for per-frame events (audio hooks in here). */
-const eventListeners: ((ev: GameEvents, g: Game) => void)[] = [];
+/** Listeners for per-frame events. */
+const eventListeners: ((ev: GameEvents, g: Game) => void)[] = [
+  (ev, g) => synth.frame(ev, g.state === GameState.Playing),
+];
 
 let prev = { x: game.lander.x, y: game.lander.y };
 /** The lander object is replaced at every round start, including a new game's first round. */
@@ -80,7 +84,9 @@ function frame(now: number): void {
   if (!paused) {
     accumulator += dt;
     while (accumulator >= FRAME_DT) {
-      step(keyboard.sample());
+      const input = keyboard.sample();
+      if (input.mute) synth.toggleMute();
+      step(input);
       accumulator -= FRAME_DT;
     }
   }
@@ -89,6 +95,8 @@ function frame(now: number): void {
 }
 
 window.addEventListener('keydown', (e) => {
+  // Browsers only allow audio to start from a user gesture.
+  synth.unlock();
   if (!keyboard.handles(e.code)) return;
   e.preventDefault();
   keyboard.keyDown(e.code);
@@ -98,7 +106,9 @@ window.addEventListener('keyup', (e) => {
   e.preventDefault();
   keyboard.keyUp(e.code);
 });
+window.addEventListener('pointerdown', () => synth.unlock());
 window.addEventListener('blur', () => keyboard.releaseAll());
+document.addEventListener('visibilitychange', () => (document.hidden ? synth.suspend() : synth.resume()));
 window.addEventListener('resize', () => vector.resize());
 
 vector.resize();
@@ -120,6 +130,9 @@ export interface TestHook {
   placeOverPad(multiplier: number, height: number, vyRaw?: number): void;
   onEvents(fn: (ev: GameEvents) => void): void;
   highScores: typeof highScores;
+  /** Recorded sound events (coin, thrust:<vol>, explosion, beep:on/off). */
+  audioLog(): string[];
+  muted(): boolean;
 }
 
 function registerEventListener(fn: (ev: GameEvents, g: Game) => void): void {
@@ -183,6 +196,8 @@ if (testMode) {
       resetCamera(camera, s);
     },
     onEvents: (fn) => registerEventListener((ev) => fn(ev)),
+    audioLog: () => [...synth.log],
+    muted: () => synth.muted,
   };
   (window as unknown as { __lunar: TestHook }).__lunar = hook;
 }
