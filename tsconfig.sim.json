@@ -1,0 +1,10 @@
+{
+  // The simulation must be DOM-free: type-check it with no DOM lib and no ambient types,
+  // so any browser API (window, document, HTMLElement, globalThis.document, ...) is a type error.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["src/sim"]
+}
