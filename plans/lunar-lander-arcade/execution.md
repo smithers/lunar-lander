@@ -12,7 +12,7 @@ tooling. All later phases run in order, because they share the simulation API an
 
 - [x] [Phase 1: Project Setup and Quality Checks](./phase-01-project-setup.md)
 - [x] [Phase 2: Fidelity Spec](./phase-02-fidelity-spec.md)
-- [ ] [Phase 3: Simulation Core](./phase-03-simulation-core.md)
+- [x] [Phase 3: Simulation Core](./phase-03-simulation-core.md)
 - [ ] [Phase 4: Game Flow and High-Score Storage](./phase-04-game-flow.md)
 - [ ] [Phase 5: Vector Graphics, HUD, Controls and Main Loop](./phase-05-vector-rendering-and-controls.md)
 - [ ] [Phase 6: Sound](./phase-06-sound.md)

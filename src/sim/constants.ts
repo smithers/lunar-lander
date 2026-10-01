@@ -104,7 +104,12 @@ export const UPRIGHT = [7, 8, 9] as const;
 /** Points per outcome, multiplied by the pad multiplier (§6). */
 export const POINTS = { good: 50, hard: 15, crash: 5 } as const;
 
-/** Frame counts (§6.2, §8, §9). */
+/** Timers: 6 NMIs per frame, the seconds counter ticks every 250 NMIs (§9). */
+export const NMI_PER_FRAME = 6;
+export const NMI_PER_SECOND = 250;
+
+/** Frame counts (§6.2, §8, §9). GAME_OVER_FRAMES (~4 s) is an estimate. */
+export const GAME_OVER_FRAMES = 164;
 export const LANDING_MESSAGE_FRAMES = 254;
 export const FUEL_LOST_FRAMES = 127;
 export const FLASH_FRAMES = 16;

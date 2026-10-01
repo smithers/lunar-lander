@@ -157,7 +157,7 @@ The lever holds its level when keys are released, like a real lever.
 | Abort burn | 2.17 units per frame of abort burn | [sourced: DIS] |
 | Low fuel | fuel < 100: "LOW ON FUEL" flashes (16 frames on / 16 off) and the 3 kHz tone beeps in step | [sourced: DIS $689E, KLOV] |
 | Out of fuel | fuel < 1: "OUT OF FUEL" shown; thrust, rotation and abort disabled; the round timer resets. If the ship hasn't landed **5 s** later, the game ends | [sourced: DIS $647B, $61B3] |
-| Landing with 0 fuel | game ends after the landing message | [sourced: DIS] |
+| Landing with 0 fuel | game ends after the landing message, **unless** the landing was perfect. The +50 fuel bonus goes through `fuel_increase_limit_9999`, which sets `fuel_state` back to has-fuel ($6313), and the end-of-round check only ends the game when `fuel_state` is clear ($6008), so play continues with 50 units | [sourced: DIS $6008, $61E2, $6313] |
 | Carry-over | remaining fuel carries into the next round | [sourced: WIKI, DIS] |
 | Perfect-landing bonus | **+50 fuel units** | [sourced: DIS $61E2, AH] |
 | Coins | each coin adds fuel per coin **at any time**, including mid-flight; limited only by the 9999 cap | [sourced: DIS $62E6, KLOV] |
@@ -219,7 +219,7 @@ There is **no** "lost in space" message in the ROM.
 - **Logical display:** 4:3 (MAME visible area 1044 × 800 DVG units). The browser letterboxes to 4:3 [sourced: MAME].
 - **Terrain:**
   - The original is a fixed, jagged mountain range that wraps horizontally. Each round randomizes the start offset and the active pad set [sourced: DIS $6235, WIKI].
-  - We **generate our own** jagged range from a seed, since ROM terrain data is not copied. It is regenerated per game, with the pad set re-randomized each round.
+  - We **generate our own** jagged range from a seed, since ROM terrain data is not copied. It is generated once per game and kept for every round of that game. Each round randomizes the start offset, meaning which part of the range the ship starts over. Our pads are fixed per game: the ROM's per-round pad-set change is not reproduced [estimate].
   - World width **4 screens**, wrapping [estimate].
   - Peaks reach up to ≈ 60% of screen height [estimate].
 - **Pads:**
