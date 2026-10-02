@@ -5,3 +5,4 @@ playwright-report/
 blob-report/
 plans/*/progress/
 .DS_Store
+.wrangler/
