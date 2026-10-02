@@ -14,6 +14,12 @@ It also adds a local high-score table, which the original did not have.
 
 It runs locally in Safari or Chrome on a Mac. Nothing is sent over the network.
 
+> **Unofficial fan recreation.** This project is not affiliated with, endorsed by, or
+> connected to Atari. *Lunar Lander* is a trademark of its respective owner. No original ROM
+> code, ROM data, artwork or sound recordings are included: the graphics, terrain, font and
+> sound are original, and the game rules were re-implemented from public documentation and
+> an annotated disassembly. It is a non-commercial hobby project.
+
 ## Run it
 
 You need [Node.js](https://nodejs.org/) 22 or newer.
