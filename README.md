@@ -1,16 +1,15 @@
 # Lunar Lander
 
-A browser recreation of Atari's 1979 vector-graphics arcade game *Lunar Lander*. It is built to
-play like the cabinet, which means:
+A browser game containing:
 
-- the same physics, rotation, abort, fuel and scoring rules, taken from the original ROM
+- physics, rotation, abort, fuel and scoring rules
 - glowing white vector lines on black
 - a ×4 close-up near the ground
 - coin-for-fuel
 - the four missions
-- synthesized sound in the style of the original circuit
+- synthesized sound 
 
-It also adds a local high-score table, which the original did not have.
+It also adds a local high-score table
 
 It runs locally in Safari or Chrome on a Mac. Nothing is sent over the network.
 
