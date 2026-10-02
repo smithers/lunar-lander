@@ -20,6 +20,10 @@ It runs locally in Safari or Chrome on a Mac. Nothing is sent over the network.
 > sound are original, and the game rules were re-implemented from public documentation and
 > an annotated disassembly. It is a non-commercial hobby project.
 
+## Play online
+
+**https://lunar-lander.lunar-lander.workers.dev**, hosted free on Cloudflare Workers.
+
 ## Run it
 
 You need [Node.js](https://nodejs.org/) 22 or newer.
@@ -37,6 +41,16 @@ npm run preview    # then open http://localhost:4173
 ```
 
 Click the page or press any key once so the browser lets the game play sound.
+
+### Deploy your own copy
+
+The build is plain static files, served as Cloudflare Workers static assets (free plan, no
+server code). With a Cloudflare account:
+
+```bash
+npx wrangler login   # once
+npm run deploy       # builds, then uploads ./dist
+```
 
 ## How to play
 
