@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.sim.json",
     "lint": "eslint .",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -21,6 +22,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
     "vite": "^8.3.2",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.11",
+    "wrangler": "^4.147.0"
   }
 }
