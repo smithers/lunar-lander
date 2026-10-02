@@ -133,10 +133,27 @@ test.describe('play: coin → start → land or crash', () => {
     expect(pageErrors(page)).toEqual([]);
   });
 
-  test('keyboard drives the lever, rotation and mission select in real time', async ({ page }) => {
+  test('keyboard drives the engine, power level, rotation and mission select in real time', async ({ page }) => {
     await openGame(page, 3);
     await coinAndStart(page);
     await page.evaluate(() => (window as any).__lunar.resume());
+    // The engine fires only while Space is held, at the power level (starts at full).
+    const thrust = () => page.evaluate(() => (window as any).__lunar.game.lander.thrust as number);
+    expect(await thrust()).toBe(0);
+    await page.keyboard.down('Space');
+    await page.waitForFunction(() => (window as any).__lunar.game.lander.thrust === 15, null, { timeout: 3000 });
+    await page.keyboard.up('Space');
+    await page.waitForFunction(() => (window as any).__lunar.game.lander.thrust === 0, null, { timeout: 3000 });
+    expect((await snap(page)).state).toBe('playing'); // Space no longer aborts
+    // Lowering the power level changes how hard Space fires, without firing on its own.
+    await page.keyboard.down('ArrowDown');
+    await page.waitForFunction(() => (window as any).__lunar.snapshot().lever <= 8, null, { timeout: 3000 });
+    await page.keyboard.up('ArrowDown');
+    expect(await thrust()).toBe(0);
+    const lever = (await snap(page)).lever;
+    await page.keyboard.down('Space');
+    await page.waitForFunction((l) => (window as any).__lunar.game.lander.thrust === l, lever, { timeout: 3000 });
+    await page.keyboard.up('Space');
     await page.keyboard.down('ArrowUp');
     await page.waitForFunction(() => (window as any).__lunar.snapshot().lever === 15, null, { timeout: 3000 });
     await page.keyboard.up('ArrowUp');
@@ -148,6 +165,10 @@ test.describe('play: coin → start → land or crash', () => {
     const s = await snap(page);
     expect(s.lever).toBe(15);
     expect(s.mission).toBe(1);
+    // X aborts.
+    await page.keyboard.down('x');
+    await page.waitForFunction(() => (window as any).__lunar.game.lander.abortCounter > 0, null, { timeout: 3000 });
+    await page.keyboard.up('x');
     expect(pageErrors(page)).toEqual([]);
   });
 });

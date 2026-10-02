@@ -18,11 +18,12 @@ export const ATTRACT_PAGES = ['title', 'scores', 'controls'] as const;
 export type AttractPage = (typeof ATTRACT_PAGES)[number];
 
 export const CONTROLS: [string, string][] = [
-  ['UP / W', 'MORE THRUST'],
-  ['DOWN / S', 'LESS THRUST'],
+  ['SPACE', 'FIRE ENGINE (HOLD)'],
+  ['UP / W', 'MORE POWER'],
+  ['DOWN / S', 'LESS POWER'],
   ['LEFT / A', 'ROTATE LEFT'],
   ['RIGHT / D', 'ROTATE RIGHT'],
-  ['SPACE', 'ABORT'],
+  ['X', 'ABORT'],
   ['5 OR C', 'INSERT COIN'],
   ['1', 'START'],
   ['TAB', 'SELECT GAME'],

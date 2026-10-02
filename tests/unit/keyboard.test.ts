@@ -1,34 +1,46 @@
 import { describe, expect, it } from 'vitest';
 import { createKeyboard, LEVER_FRAMES_PER_STEP } from '../../src/input/keyboard';
 
-describe('keyboard thrust lever (spec §2.6)', () => {
-  it('raises one level per LEVER_FRAMES_PER_STEP frames held and clamps at 15', () => {
+describe('thrust: Space fires at the lever level (spec §2.6)', () => {
+  it('no thrust unless Space is held; holding Space fires at the lever level (starts at 15)', () => {
     const k = createKeyboard();
-    k.keyDown('ArrowUp');
-    const levels: number[] = [];
-    for (let i = 0; i < 40; i++) levels.push(k.sample().thrustLevel);
-    expect(levels[0]).toBe(1);
-    expect(levels[LEVER_FRAMES_PER_STEP]).toBe(2);
-    expect(levels[39]).toBe(15);
-    expect(Math.max(...levels)).toBe(15);
-  });
-  it('holds its level when released and lowers with ArrowDown / S, clamping at 0', () => {
-    const k = createKeyboard();
-    k.keyDown('KeyW');
-    for (let i = 0; i < 9; i++) k.sample();
-    k.keyUp('KeyW');
-    const held = k.sample().thrustLevel;
-    expect(held).toBe(5);
-    expect(k.sample().thrustLevel).toBe(5);
-    k.keyDown('KeyS');
-    for (let i = 0; i < 40; i++) k.sample();
+    expect(k.lever).toBe(15);
+    expect(k.sample().thrustLevel).toBe(0);
+    k.keyDown('Space');
+    expect(k.sample().thrustLevel).toBe(15);
+    expect(k.sample().thrustLevel).toBe(15);
+    k.keyUp('Space');
     expect(k.sample().thrustLevel).toBe(0);
   });
-  it('a quick tap between frames still moves the lever one step', () => {
+  it('a Space tap shorter than a frame still fires for one frame', () => {
     const k = createKeyboard();
-    k.keyDown('ArrowUp');
-    k.keyUp('ArrowUp');
-    expect(k.sample().thrustLevel).toBe(1);
+    k.keyDown('Space');
+    k.keyUp('Space');
+    expect(k.sample().thrustLevel).toBe(15);
+    expect(k.sample().thrustLevel).toBe(0);
+  });
+  it('down/up set the level one step per LEVER_FRAMES_PER_STEP frames, clamped to 0..15, without firing', () => {
+    const k = createKeyboard();
+    k.keyDown('ArrowDown');
+    const levels: number[] = [];
+    for (let i = 0; i < 40; i++) levels.push((k.sample(), k.lever));
+    expect(levels[0]).toBe(14);
+    expect(levels[LEVER_FRAMES_PER_STEP]).toBe(13);
+    expect(levels[39]).toBe(0);
+    k.keyUp('ArrowDown');
+    k.keyDown('KeyW');
+    for (let i = 0; i < 9; i++) expect(k.sample().thrustLevel).toBe(0); // adjusting alone never fires
+    k.keyUp('KeyW');
+    expect(k.lever).toBe(5);
+    k.keyDown('Space');
+    expect(k.sample().thrustLevel).toBe(5);
+  });
+  it('a quick tap of a lever key moves it one step', () => {
+    const k = createKeyboard();
+    k.keyDown('KeyS');
+    k.keyUp('KeyS');
+    k.sample();
+    expect(k.lever).toBe(14);
   });
 });
 
@@ -42,15 +54,19 @@ describe('key mapping', () => {
     k.keyUp('ArrowLeft');
     expect(k.sample().rotate).toBe(-1);
   });
-  it('abort is a level on Space; confirm is an edge on Space or Enter', () => {
+  it('abort is a level on X; Space does not abort; confirm is an edge on Space or Enter', () => {
     const k = createKeyboard();
-    k.keyDown('Space');
+    k.keyDown('KeyX');
     const a = k.sample();
     expect(a.abortHeld).toBe(true);
-    expect(a.confirm).toBe(true);
+    expect(a.confirm).toBe(false);
+    expect(k.sample().abortHeld).toBe(true);
+    k.keyUp('KeyX');
+    k.keyDown('Space');
     const b = k.sample();
-    expect(b.abortHeld).toBe(true);
-    expect(b.confirm).toBe(false);
+    expect(b.abortHeld).toBe(false);
+    expect(b.confirm).toBe(true);
+    expect(k.sample().confirm).toBe(false);
     k.keyUp('Space');
     k.keyDown('Enter');
     expect(k.sample().confirm).toBe(true);
@@ -95,13 +111,15 @@ describe('key mapping', () => {
     const k = createKeyboard();
     expect(k.handles('Tab')).toBe(true);
     expect(k.handles('Space')).toBe(true);
+    expect(k.handles('KeyX')).toBe(true);
     expect(k.handles('KeyQ')).toBe(false);
   });
-  it('releaseAll clears held keys, queued edges and the lever ramp (window blur)', () => {
+  it('releaseAll clears held keys (cutting thrust), queued edges and the lever ramp (window blur)', () => {
     const k = createKeyboard();
     k.keyDown('ArrowLeft');
     k.keyDown('Space');
-    k.keyDown('ArrowUp');
+    k.keyDown('KeyX');
+    k.keyDown('ArrowDown');
     k.keyDown('Tab');
     k.releaseAll();
     const s = k.sample();
@@ -109,7 +127,8 @@ describe('key mapping', () => {
     expect(s.abortHeld).toBe(false);
     expect(s.confirm).toBe(false);
     expect(s.select).toBe(false);
-    expect(s.thrustLevel).toBe(0);
+    expect(s.thrustLevel).toBe(0); // the engine stops when the window loses focus
+    expect(k.lever).toBe(15); // and the queued lever step was dropped
   });
 });
 

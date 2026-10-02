@@ -73,16 +73,19 @@ Start, Select Game, Abort, Rotate Left, Rotate Right, and an analog thrust lever
 ### 2.6 Keyboard mapping (this recreation)
 | Action | Keys |
 |---|---|
-| Raise / lower thrust lever (one level per 2 frames held; 0 → 15 in ≈ 0.73 s) | ↑ / W, ↓ / S |
+| Fire the engine (thrust only while held) | Space |
+| Raise / lower the power level (one level per 2 frames held; 0 → 15 in ≈ 0.73 s; starts at 15) | ↑ / W, ↓ / S |
 | Rotate left / right | ← / A, → / D |
-| Abort | Space |
+| Abort | X |
 | Insert coin | 5 or C |
 | Start | 1 |
 | Select Game (cycle mission) | Tab |
 | Mute | M |
 
 The lever ramp rate is [estimate]; the rest is [addition] (keyboard stands in for the cabinet).
-The lever holds its level when keys are released, like a real lever.
+The power level holds when ↑/↓ are released, like a real lever. The cabinet's lever both sets
+power and fires; on the keyboard these are split, at the player's request: Space fires the
+engine at the set power, and releasing Space cuts thrust to 0.
 
 ## 3. Difficulty modes
 

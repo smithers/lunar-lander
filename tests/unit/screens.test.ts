@@ -12,8 +12,16 @@ describe('attract pages', () => {
   it('the controls page lists the spec §2.6 keys in drawable characters', () => {
     const text = CONTROLS.flat().join('');
     for (const ch of text) expect(hasGlyph(ch)).toBe(true);
-    expect(CONTROLS.map(([, a]) => a)).toEqual(
-      expect.arrayContaining(['MORE THRUST', 'LESS THRUST', 'ABORT', 'INSERT COIN', 'START', 'SELECT GAME']),
+    expect(CONTROLS).toEqual(
+      expect.arrayContaining([
+        ['SPACE', 'FIRE ENGINE (HOLD)'],
+        ['UP / W', 'MORE POWER'],
+        ['DOWN / S', 'LESS POWER'],
+        ['X', 'ABORT'],
+        ['5 OR C', 'INSERT COIN'],
+        ['1', 'START'],
+        ['TAB', 'SELECT GAME'],
+      ]),
     );
   });
 });

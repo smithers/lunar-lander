@@ -40,11 +40,12 @@ time buys more, even mid-flight.
 
 | Key | Action |
 |---|---|
-| ↑ / W | Raise the thrust lever (it stays where you leave it) |
-| ↓ / S | Lower the thrust lever |
+| Space (hold) | Fire the engine. Releasing Space cuts the thrust. |
+| ↑ / W | More engine power (it stays where you leave it; starts at full) |
+| ↓ / S | Less engine power |
 | ← / A | Rotate left |
 | → / D | Rotate right |
-| Space | Abort: right the lander and burn hard upward (costly in fuel) |
+| X | Abort: right the lander and burn hard upward (costly in fuel) |
 | 5 or C | Insert a coin (750 fuel units) |
 | 1 | Start |
 | Tab | Select Game: cycle the mission (also works mid-flight) |
@@ -75,7 +76,7 @@ When a score makes the table, enter your initials with ← / → and confirm eac
 | `src/sim/` | Deterministic, browser-free simulation: physics, terrain, landing rules, game states |
 | `src/render/` | Vector display, camera, font, HUD and screens |
 | `src/audio/` | Web Audio sound |
-| `src/input/` | Keyboard → thrust lever and controls |
+| `src/input/` | Keyboard → engine, power level and controls |
 | `src/storage/` | High scores in `localStorage` |
 | `plans/` | The plan this was built from |
 
